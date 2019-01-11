@@ -5,13 +5,23 @@
              x:Class="FoodChain.MainPage">
 
     <StackLayout BindingContext="{StaticResource Key= chatListModels}">
-        <ListView ItemsSource="{Binding ChatList}">
-            
-        </ListView>
+        <StackLayout>
+            <ListView ItemsSource="{Binding Path= ChatLists[0]}">
 
-        <Entry Text="{Binding Message}"/>
-        <Button Text="전송" Command="{Binding SendCommand}"/>
+            </ListView>
+            <Entry Text="{Binding LobbyMessage}"/>
+            <Button Text="전송" Command="{Binding SendInLobby}"/>
+        </StackLayout>
+        <StackLayout>
+            <ListView ItemsSource="{Binding Path= ChatLists[1]}">
+
+            </ListView>
+            <Entry Text="{Binding MWTNMessage}"/>
+            <Button Text="전송" Command="{Binding SendInMWTN}"/>
+        </StackLayout>
+        
 
     </StackLayout>
+    
 
 </ContentPage>

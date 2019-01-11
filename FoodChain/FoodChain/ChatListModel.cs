@@ -14,9 +14,17 @@ namespace App6
     {
         private const string HOST = "192.168.0.4";
         private const int PORT = 8080;
+        private const byte LOCALFLAG = 0xed;
+        private const byte LOBBYCHAT = 0xa1;
+        private const byte MTCHAT = 0xa2;
+        private const byte FDCHAT = 0xa3;
+        private const byte SKYCHAT = 0xa4;
+        private const byte RVCHAT = 0xa5;
+        private const byte GHOST = 0xa6;
+    
 
-        private ObservableCollection<string> chatList;
-        private string message;
+        private ObservableCollection<string>[] chatLists = new ObservableCollection<string>[6];
+        private string[] messages = new string[6];
         private Socket senderSocket;
         private Socket receiveSocket;
         private int uid;
@@ -25,7 +33,11 @@ namespace App6
         private Task receiverTask = null;
         public ChatListModels()
         {
-            chatList = new ObservableCollection<string>();
+            for(int i = 0; i < 6; i++)
+            {
+                chatLists[i] = new ObservableCollection<string>();
+            }
+            
             ConnectToServer();
         }
         private async void ConnectToServer()
@@ -90,8 +102,30 @@ namespace App6
                         }
                         if (ETB != 0)
                         {
-                            string text = Encoding.UTF8.GetString(buffer.ToArray(), 0, ETB);
-                            chatList.Add(text);
+                            var test = buffer.GetRange(0, 2).ToArray();
+                            if(test[0] == LOCALFLAG)
+                            {
+                                var messageBuffer = buffer.GetRange(4, buffer.Count - 4);
+                                string text = Encoding.UTF8.GetString(messageBuffer.ToArray(), 0, ETB - 4);
+
+                                switch (test[1])
+                                {
+                                    case LOBBYCHAT:
+                                        chatLists[0].Add(text);
+                                        break;
+                                    case MTCHAT:
+                                        chatLists[1].Add(text);
+                                        break;
+                                    case FDCHAT:
+                                    case SKYCHAT:
+                                    case RVCHAT:
+                                        break;
+                                }
+                            }
+                            
+
+                            
+                                                      
                         }
                         buffer.RemoveRange(0, ETB + 1);
 
@@ -102,47 +136,84 @@ namespace App6
                 //receiveSocket.Receive()
             });
         }
-        public async void SendMessageToServer()
+        public async void SendMessageToServer(int flag)
         {
-            if (message.Trim().Length == 0) return;
-            message = message.Trim();
+            if (messages[flag].Trim().Length == 0) return;
+            string message = messages[flag].Trim();
             if (sendTask != null)
             {
                 await sendTask;
             }
             sendTask = Task.Run(() =>
             {
+                byte[] roomState = new byte[2];
+                roomState[0] = LOCALFLAG;
+        
                 var bytes = Encoding.UTF8.GetBytes(message);
-                Message = "";
+                
+
+
+                switch (flag)
+                {
+                    case 0:
+                        roomState[1] =LOBBYCHAT;
+                        LobbyMessage = "";
+                        break;
+                    case 1:
+                        roomState[1] = MTCHAT;
+                        MWTNMessage = "";
+                        break;
+                }
+
+                var sendToBytes = roomState.Concat(bytes).ToArray();
 
                 int s = 0;
                 do
                 {
-                    s += senderSocket.Send(bytes, s, bytes.Length - s, SocketFlags.None);
+                    s += senderSocket.Send(sendToBytes, s, sendToBytes.Length - s, SocketFlags.None);
                 }
-                while (s != bytes.Length);
+                while (s != sendToBytes.Length);
                 bytes[0] = 0x17;
                 while (senderSocket.Send(bytes, 0, 1, SocketFlags.None) != 1) ;
                 sendTask = null;
             });
             //sendTask.Start();
         }
-        public Command SendCommand
+        public Command SendInLobby
         {
-            get => new Command(() => SendMessageToServer());
+            get => new Command(() => SendMessageToServer(0));
         }
-        public string Message
+
+        public Command SendInMWTN
         {
-            get => message;
+            get => new Command(() => SendMessageToServer(1));
+        }
+
+        public string LobbyMessage
+        {
+            get => messages[0];
             set
             {
 
-                message = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Message"));
+                messages[0] = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LobbyMessage"));
             }
 
         }
-        public ObservableCollection<string> ChatList { get => chatList; }
+
+        public string MWTNMessage
+        {
+            get => messages[1];
+            set
+            {
+
+                messages[1] = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MWTNMessage"));
+            }
+
+        }
+
+        public ObservableCollection<string>[] ChatLists { get => chatLists; }
 
     }
 }
