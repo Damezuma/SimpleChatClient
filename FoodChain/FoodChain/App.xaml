@@ -5,7 +5,7 @@
              x:Class="FoodChain.App">
     <Application.Resources>
         <ResourceDictionary>
-            <local:ChatListModels x:Name=" chatListModels" x:Key="chatListModels"/>
+            <local:ChatListModel x:Name=" chatListModels" x:Key="chatListModels"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

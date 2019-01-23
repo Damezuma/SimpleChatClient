@@ -30,13 +30,13 @@
     <AppXManifest Include="C:\Users\qwead\Desktop\cowkong\FoodChain\FoodChain\FoodChain.UWP\bin\x86\Debug\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2019-01-11T04:48:06.979</Modified>
+      <Modified>2019-01-15T06:15:42.157</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\Users\qwead\Desktop\cowkong\FoodChain\FoodChain\FoodChain.UWP\bin\x86\Debug\FoodChain.UWP.exe">
       <PackagePath>entrypoint\FoodChain.UWP.exe</PackagePath>
-      <Modified>2019-01-11T04:48:05.282</Modified>
+      <Modified>2019-01-15T06:15:41.583</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\qwead\.nuget\packages\runtime.win10-x86.microsoft.netcore.universalwindowsplatform\6.1.5\runtimes\win10-x86\nativeassets\uap10.0.15138\clrcompression.dll">
       <PackagePath>clrcompression.dll</PackagePath>
@@ -855,11 +855,11 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\qwead\Desktop\cowkong\FoodChain\FoodChain\FoodChain.UWP\bin\x86\Debug\App.xbf">
       <PackagePath>App.xbf</PackagePath>
-      <Modified>2019-01-11T04:48:04.673</Modified>
+      <Modified>2019-01-15T06:15:40.999</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\qwead\Desktop\cowkong\FoodChain\FoodChain\FoodChain.UWP\bin\x86\Debug\MainPage.xbf">
       <PackagePath>MainPage.xbf</PackagePath>
-      <Modified>2019-01-11T04:48:04.673</Modified>
+      <Modified>2019-01-15T06:15:40.999</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Windows Kits\10\UnionMetadata\10.0.16299.0\Windows.winmd">
       <PackagePath>WinMetadata\Windows.winmd</PackagePath>
@@ -875,7 +875,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\qwead\Desktop\cowkong\FoodChain\FoodChain\FoodChain.UWP\bin\x86\Debug\Core\FoodChain.UWP.exe">
       <PackagePath>FoodChain.UWP.exe</PackagePath>
-      <Modified>2019-01-11T04:48:06.974</Modified>
+      <Modified>2019-01-15T06:15:42.150</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

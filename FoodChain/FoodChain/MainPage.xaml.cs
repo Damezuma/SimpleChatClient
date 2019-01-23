@@ -13,5 +13,13 @@ namespace FoodChain
         {
             InitializeComponent();
         }
+
+
+        public void Btn_nextPage_Clicked(object sender, EventArgs e)
+        {
+            Navigation.PushModalAsync(new MovePage());
+        }
+
+        
     }
 }

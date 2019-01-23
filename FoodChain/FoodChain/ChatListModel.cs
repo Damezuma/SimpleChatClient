@@ -7,36 +7,54 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using FoodChain.message;
+
 
 namespace App6
 {
-    public class ChatListModels : INotifyPropertyChanged
+    public enum Room { Field, Mountain, Sky, River}
+    public enum FLAG { chat, attack, move, camouflage, spy, predict}
+    public enum Opposite {mountain, sky, river, field, lion, alligator,
+        eagle,
+        hyena,
+        snake,
+        chameleon,
+        deer,
+        otter,
+        rabbit,
+        bronzeDuck,
+        crow,
+        crocodileBird,
+        rat,
+        no
+    }
+    public class ChatListModel : INotifyPropertyChanged
     {
         private const string HOST = "192.168.0.4";
         private const int PORT = 8080;
-        private const byte LOCALFLAG = 0xed;
+        private const byte NOLOG = 0xa0;
+        private const byte CHATFLAG = 0xa1;
         private const byte LOBBYCHAT = 0xa1;
         private const byte MTCHAT = 0xa2;
         private const byte FDCHAT = 0xa3;
         private const byte SKYCHAT = 0xa4;
         private const byte RVCHAT = 0xa5;
         private const byte GHOST = 0xa6;
-    
 
-        private ObservableCollection<string>[] chatLists = new ObservableCollection<string>[6];
-        private string[] messages = new string[6];
+
+        private ObservableCollection<string> chatLists;
+        private string message;
         private Socket senderSocket;
         private Socket receiveSocket;
         private int uid;
         public event PropertyChangedEventHandler PropertyChanged;
         private Task sendTask = null;
         private Task receiverTask = null;
-        public ChatListModels()
+        public ChatListModel()
         {
-            for(int i = 0; i < 6; i++)
-            {
-                chatLists[i] = new ObservableCollection<string>();
-            }
+
+            chatLists = new ObservableCollection<string>();
+            
             
             ConnectToServer();
         }
@@ -102,30 +120,16 @@ namespace App6
                         }
                         if (ETB != 0)
                         {
-                            var test = buffer.GetRange(0, 2).ToArray();
-                            if(test[0] == LOCALFLAG)
+                            var test = buffer.GetRange(0, 1).ToArray();
+                            
+                            if(test[0] == CHATFLAG)
                             {
-                                var messageBuffer = buffer.GetRange(4, buffer.Count - 4);
-                                string text = Encoding.UTF8.GetString(messageBuffer.ToArray(), 0, ETB - 4);
+                                var messageBuffer = buffer.GetRange(1, buffer.Count - 1);
+                                string text = Encoding.UTF8.GetString(messageBuffer.ToArray(), 0, ETB - 1);
+                                chatLists.Add(text);
 
-                                switch (test[1])
-                                {
-                                    case LOBBYCHAT:
-                                        chatLists[0].Add(text);
-                                        break;
-                                    case MTCHAT:
-                                        chatLists[1].Add(text);
-                                        break;
-                                    case FDCHAT:
-                                    case SKYCHAT:
-                                    case RVCHAT:
-                                        break;
-                                }
                             }
-                            
-
-                            
-                                                      
+ 
                         }
                         buffer.RemoveRange(0, ETB + 1);
 
@@ -136,36 +140,40 @@ namespace App6
                 //receiveSocket.Receive()
             });
         }
-        public async void SendMessageToServer(int flag)
+        public async void SendMessageToServer(FLAG flag, Opposite opposite)
         {
-            if (messages[flag].Trim().Length == 0) return;
-            string message = messages[flag].Trim();
+            
             if (sendTask != null)
             {
                 await sendTask;
             }
             sendTask = Task.Run(() =>
             {
-                byte[] roomState = new byte[2];
-                roomState[0] = LOCALFLAG;
-        
-                var bytes = Encoding.UTF8.GetBytes(message);
-                
+                byte[] sendToBytes = new byte[1];
 
-
+                message msg = null;
                 switch (flag)
                 {
-                    case 0:
-                        roomState[1] =LOBBYCHAT;
-                        LobbyMessage = "";
-                        break;
-                    case 1:
-                        roomState[1] = MTCHAT;
-                        MWTNMessage = "";
-                        break;
+                    case FLAG.chat:
+                        {
+                            if (this.message.Trim().Length == 0) return;
+                            string message = this.message.Trim();
+                            this.Message = "";
+                            msg = new ChatMessage(message);                      
+                            break;
+                        }
+                    case FLAG.move:
+                             msg = new MoveMessage(opposite);
+                            break;
                 }
-
-                var sendToBytes = roomState.Concat(bytes).ToArray();
+                if(msg == null)
+                {
+                    sendToBytes[0] = NOLOG;
+                }
+                else
+                {
+                    sendToBytes = msg.MessageBytes;
+                }
 
                 int s = 0;
                 do
@@ -173,47 +181,56 @@ namespace App6
                     s += senderSocket.Send(sendToBytes, s, sendToBytes.Length - s, SocketFlags.None);
                 }
                 while (s != sendToBytes.Length);
+
+                byte[] bytes = new byte[1];
                 bytes[0] = 0x17;
+
                 while (senderSocket.Send(bytes, 0, 1, SocketFlags.None) != 1) ;
                 sendTask = null;
+
             });
             //sendTask.Start();
         }
-        public Command SendInLobby
+        public Command Send
         {
-            get => new Command(() => SendMessageToServer(0));
+            get => new Command(() => SendMessageToServer(FLAG.chat,Opposite.no));
         }
 
-        public Command SendInMWTN
-        {
-            get => new Command(() => SendMessageToServer(1));
-        }
 
-        public string LobbyMessage
+        public string Message
         {
-            get => messages[0];
+            get => message;
             set
             {
 
-                messages[0] = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LobbyMessage"));
+                message = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Message"));
             }
 
         }
-
-        public string MWTNMessage
+        public Room Room
         {
-            get => messages[1];
             set
             {
-
-                messages[1] = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MWTNMessage"));
+                switch(value)
+                {
+                    case Room.Field:
+                        SendMessageToServer(FLAG.move, Opposite.field);
+                        break;
+                    case Room.Mountain:
+                        SendMessageToServer(FLAG.move, Opposite.mountain);
+                        break;
+                    case Room.Sky:
+                        SendMessageToServer(FLAG.move, Opposite.sky);
+                        break;
+                    case Room.River:
+                        SendMessageToServer(FLAG.move, Opposite.river);
+                        break;
+                }
             }
-
         }
 
-        public ObservableCollection<string>[] ChatLists { get => chatLists; }
+        public ObservableCollection<string> ChatLists { get => chatLists; }
 
     }
 }

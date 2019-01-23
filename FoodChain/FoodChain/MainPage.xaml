@@ -6,20 +6,24 @@
 
     <StackLayout BindingContext="{StaticResource Key= chatListModels}">
         <StackLayout>
-            <ListView ItemsSource="{Binding Path= ChatLists[0]}">
+            <Label
+                Text="로비"
+                VerticalOptions="Center"
+                HorizontalOptions="FillAndExpand"
+                HorizontalTextAlignment="Center"/>
+            <Button
+                Text="이동하기"
+                VerticalOptions="End"
+                HorizontalOptions="FillAndExpand"
+                Clicked="Btn_nextPage_Clicked"/>
+            
+            <ListView ItemsSource="{Binding ChatLists}">
 
             </ListView>
-            <Entry Text="{Binding LobbyMessage}"/>
-            <Button Text="전송" Command="{Binding SendInLobby}"/>
+            <Entry Text="{Binding Message,Mode=TwoWay}"/>
+            <Button Text="전송" Command="{Binding Send}"/>
         </StackLayout>
-        <StackLayout>
-            <ListView ItemsSource="{Binding Path= ChatLists[1]}">
 
-            </ListView>
-            <Entry Text="{Binding MWTNMessage}"/>
-            <Button Text="전송" Command="{Binding SendInMWTN}"/>
-        </StackLayout>
-        
 
     </StackLayout>
     

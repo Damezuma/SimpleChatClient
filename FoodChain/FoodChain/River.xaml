@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodChain.River">
+    <ContentPage.Content>
+        <StackLayout BindingContext="{StaticResource Key= chatListModels}">
+            <StackLayout>
+                <Label
+                Text="강"
+                VerticalOptions="Center"
+                HorizontalOptions="FillAndExpand"
+                HorizontalTextAlignment="Center"/>
+
+
+                <ListView ItemsSource="{Binding ChatLists}">
+
+                </ListView>
+                <Entry Text="{Binding Message}"/>
+                <Button Text="전송" Command="{Binding Send}"/>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

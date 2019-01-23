@@ -17,8 +17,12 @@ namespace FoodChain {
     public partial class App : global::Xamarin.Forms.Application {
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
+        private global::App6.ChatListModel  chatListModels;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
         private void InitializeComponent() {
             global::Xamarin.Forms.Xaml.Extensions.LoadFromXaml(this, typeof(App));
+             chatListModels = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::App6.ChatListModel>(this, " chatListModels");
         }
     }
 }

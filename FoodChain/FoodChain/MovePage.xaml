@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodChain.MovePage">
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="이동할 지역을 선택해주세요!"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" />
+            <StackLayout>
+                <Grid HorizontalOptions="Center"
+                  VerticalOptions="Center">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height ="200"/>
+                        <RowDefinition Height ="200"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- 첫줄-->
+                    <Button Text="산으로 이동하기"
+                        Clicked ="Btn_moveMountain_Clicked"
+                        BackgroundColor="#33FFFF"
+                        BorderWidth="0"
+                        Grid.Row="0" Grid.Column ="0"/>
+                    <Button Text="들로 이동하기"
+                        Clicked ="Btn_moveField_Clicked"
+                        BackgroundColor="#FF9999"
+                        BorderWidth="0"
+                        Grid.Row="0" Grid.Column ="1"/>
+                    <Button Text="강로 이동하기"
+                        Clicked ="Btn_moveRiver_Clicked"
+                        BackgroundColor="#3300FF"
+                        BorderWidth="0"
+                        Grid.Row="1" Grid.Column ="0"/>
+                    <Button Text="하늘로 이동하기"
+                        Clicked ="Btn_moveSky_Clicked"
+                        BackgroundColor="#BBBBBB"
+                        BorderWidth="0"
+                        Grid.Row="1" Grid.Column ="1"/>
+
+                </Grid>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
